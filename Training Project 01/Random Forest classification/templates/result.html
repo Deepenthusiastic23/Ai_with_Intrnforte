@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Prediction Result</title>
+
+    <style>
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            background: #f4f6f8;
+
+            margin: 0;
+
+            padding: 50px;
+
+        }
+
+
+        .container {
+
+            max-width: 600px;
+
+            margin: auto;
+
+            background: white;
+
+            padding: 40px;
+
+            text-align: center;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 4px 15px
+                rgba(0,0,0,0.1);
+
+        }
+
+
+        h1 {
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .result {
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            margin: 25px 0;
+
+        }
+
+
+        .probability {
+
+            font-size: 20px;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        a {
+
+            display: inline-block;
+
+            padding: 12px 25px;
+
+            background: #2874f0;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 6px;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>
+        Prediction Result
+    </h1>
+
+
+    <div class="result">
+
+        {{ prediction }}
+
+    </div>
+
+
+    <div class="probability">
+
+        Churn Probability:
+
+        <strong>
+            {{ probability }}%
+        </strong>
+
+    </div>
+
+
+    <a href="/">
+
+        Predict Another Customer
+
+    </a>
+
+</div>
+
+</body>
+
+</html>

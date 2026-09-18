@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Customer Churn Prediction</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 30px;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            background: #2874f0;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>
+        Customer Churn Prediction
+    </h1>
+
+
+    <form
+        action="/predict"
+        method="POST"
+    >
+
+        <div class="grid">
+
+
+            <!-- Gender -->
+
+            <div class="field">
+
+                <label>
+                    Gender
+                </label>
+
+                <select
+                    name="gender"
+                    required
+                >
+
+                    <option value="Male">
+                        Male
+                    </option>
+
+                    <option value="Female">
+                        Female
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Senior Citizen -->
+
+            <div class="field">
+
+                <label>
+                    Senior Citizen
+                </label>
+
+                <select
+                    name="SeniorCitizen"
+                    required
+                >
+
+                    <option value="0">
+                        No
+                    </option>
+
+                    <option value="1">
+                        Yes
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Partner -->
+
+            <div class="field">
+
+                <label>
+                    Partner
+                </label>
+
+                <select
+                    name="Partner"
+                    required
+                >
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Dependents -->
+
+            <div class="field">
+
+                <label>
+                    Dependents
+                </label>
+
+                <select
+                    name="Dependents"
+                    required
+                >
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Tenure -->
+
+            <div class="field">
+
+                <label>
+                    Tenure (months)
+                </label>
+
+                <input
+                    type="number"
+                    name="tenure"
+                    min="0"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Phone Service -->
+
+            <div class="field">
+
+                <label>
+                    Phone Service
+                </label>
+
+                <select
+                    name="PhoneService"
+                    required
+                >
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Multiple Lines -->
+
+            <div class="field">
+
+                <label>
+                    Multiple Lines
+                </label>
+
+                <select
+                    name="MultipleLines"
+                    required
+                >
+
+                    <option value="No phone service">
+                        No phone service
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Internet Service -->
+
+            <div class="field">
+
+                <label>
+                    Internet Service
+                </label>
+
+                <select
+                    name="InternetService"
+                    required
+                >
+
+                    <option value="DSL">
+                        DSL
+                    </option>
+
+                    <option value="Fiber optic">
+                        Fiber optic
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Online Security -->
+
+            <div class="field">
+
+                <label>
+                    Online Security
+                </label>
+
+                <select
+                    name="OnlineSecurity"
+                    required
+                >
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                    <option value="No internet service">
+                        No internet service
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Online Backup -->
+
+            <div class="field">
+
+                <label>
+                    Online Backup
+                </label>
+
+                <select
+                    name="OnlineBackup"
+                    required
+                >
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                    <option value="No internet service">
+                        No internet service
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Device Protection -->
+
+            <div class="field">
+
+                <label>
+                    Device Protection
+                </label>
+
+                <select
+                    name="DeviceProtection"
+                    required
+                >
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                    <option value="No internet service">
+                        No internet service
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Tech Support -->
+
+            <div class="field">
+
+                <label>
+                    Tech Support
+                </label>
+
+                <select
+                    name="TechSupport"
+                    required
+                >
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                    <option value="No internet service">
+                        No internet service
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Streaming TV -->
+
+            <div class="field">
+
+                <label>
+                    Streaming TV
+                </label>
+
+                <select
+                    name="StreamingTV"
+                    required
+                >
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                    <option value="No internet service">
+                        No internet service
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Streaming Movies -->
+
+            <div class="field">
+
+                <label>
+                    Streaming Movies
+                </label>
+
+                <select
+                    name="StreamingMovies"
+                    required
+                >
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                    <option value="No internet service">
+                        No internet service
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Contract -->
+
+            <div class="field">
+
+                <label>
+                    Contract
+                </label>
+
+                <select
+                    name="Contract"
+                    required
+                >
+
+                    <option value="Month-to-month">
+                        Month-to-month
+                    </option>
+
+                    <option value="One year">
+                        One year
+                    </option>
+
+                    <option value="Two year">
+                        Two year
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Paperless Billing -->
+
+            <div class="field">
+
+                <label>
+                    Paperless Billing
+                </label>
+
+                <select
+                    name="PaperlessBilling"
+                    required
+                >
+
+                    <option value="Yes">
+                        Yes
+                    </option>
+
+                    <option value="No">
+                        No
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Payment Method -->
+
+            <div class="field">
+
+                <label>
+                    Payment Method
+                </label>
+
+                <select
+                    name="PaymentMethod"
+                    required
+                >
+
+                    <option value="Electronic check">
+                        Electronic check
+                    </option>
+
+                    <option value="Mailed check">
+                        Mailed check
+                    </option>
+
+                    <option value="Bank transfer (automatic)">
+                        Bank transfer (automatic)
+                    </option>
+
+                    <option value="Credit card (automatic)">
+                        Credit card (automatic)
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Monthly Charges -->
+
+            <div class="field">
+
+                <label>
+                    Monthly Charges
+                </label>
+
+                <input
+                    type="number"
+                    name="MonthlyCharges"
+                    step="0.01"
+                    min="0"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Total Charges -->
+
+            <div class="field">
+
+                <label>
+                    Total Charges
+                </label>
+
+                <input
+                    type="number"
+                    name="TotalCharges"
+                    step="0.01"
+                    min="0"
+                    required
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <button type="submit">
+
+            Predict Customer Churn
+
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>
