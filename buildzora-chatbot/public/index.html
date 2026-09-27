@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BuildZora Support</title>
+<style>
+:root{
+  --ink:#1E2320; --paper:#F3EFE6; --steel:#48534C; --rust:#B5602F;
+  --line:#D8D0BF; --card:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --ink:#EDEAE0; --paper:#181B18; --steel:#9BA79E; --line:#333A34; --card:#20241F; }
+}
+*{box-sizing:border-box;}
+html,body{height:100%; margin:0;}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Iowan Old Style','Georgia',serif;
+  display:flex; align-items:flex-end; justify-content:flex-end; padding:24px;
+}
+.stage{max-width:640px; padding-top:40px;}
+.pitch{font-size:14px; color:var(--steel); max-width:320px; line-height:1.5; font-family:Georgia,serif;}
+.pitch b{color:var(--ink);}
+
+.launcher{
+  position:fixed; right:24px; bottom:24px; width:60px; height:60px; border-radius:16px;
+  border:none; background:var(--rust); color:#fff; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(0,0,0,.25);
+  transition:transform .15s ease;
+}
+.launcher:hover{transform:scale(1.05);}
+.launcher svg{width:26px; height:26px;}
+
+.panel{
+  position:fixed; right:24px; bottom:96px; width:min(380px, calc(100vw - 48px));
+  height:min(560px, calc(100vh - 160px)); background:var(--card); border:1px solid var(--line);
+  border-radius:18px; display:flex; flex-direction:column; overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.3); transform:translateY(16px); opacity:0; pointer-events:none;
+  transition:transform .2s ease, opacity .2s ease;
+}
+.panel.open{transform:translateY(0); opacity:1; pointer-events:auto;}
+
+.head{background:var(--ink); color:var(--paper); padding:16px 18px; display:flex; align-items:center; gap:10px; flex-shrink:0;}
+.head .mark{width:32px; height:32px; border-radius:8px; background:var(--rust); display:flex; align-items:center; justify-content:center; font-weight:600; font-size:15px; flex-shrink:0;}
+.head .who{font-size:15px; font-weight:600;}
+.head .sub{font-size:11.5px; opacity:.7; font-family:-apple-system,sans-serif;}
+
+.log{flex:1; overflow-y:auto; padding:16px 14px; display:flex; flex-direction:column; gap:10px; font-family:-apple-system,sans-serif;}
+.msg{max-width:84%; padding:10px 13px; border-radius:14px; font-size:14px; line-height:1.45;}
+.msg.bot{background:var(--paper); border:1px solid var(--line); align-self:flex-start; border-bottom-left-radius:4px;}
+.msg.user{background:var(--rust); color:#fff; align-self:flex-end; border-bottom-right-radius:4px;}
+.msg.typing{display:flex; gap:4px; align-items:center; padding:12px 14px;}
+.dot{width:6px; height:6px; border-radius:50%; background:var(--steel); animation:blink 1.2s infinite;}
+.dot:nth-child(2){animation-delay:.2s;} .dot:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.25;} 40%{opacity:1;}}
+
+.chips{display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 10px; font-family:-apple-system,sans-serif;}
+.chip{border:1px solid var(--line); background:transparent; color:var(--ink); font-size:12.5px; padding:6px 10px; border-radius:999px; cursor:pointer;}
+.chip:hover{border-color:var(--rust); color:var(--rust);}
+
+.inputRow{display:flex; gap:8px; padding:12px; border-top:1px solid var(--line); flex-shrink:0; font-family:-apple-system,sans-serif;}
+.inputRow input{flex:1; border:1px solid var(--line); background:var(--paper); color:var(--ink); border-radius:12px; padding:10px 12px; font-size:14px; outline:none;}
+.inputRow input:focus{border-color:var(--rust);}
+.inputRow button{background:var(--rust); border:none; color:#fff; width:40px; border-radius:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.inputRow button:disabled{opacity:.4; cursor:default;}
+.foot{font-size:10.5px; color:var(--steel); text-align:center; padding:6px 0 10px; font-family:-apple-system,sans-serif;}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="pitch"><b>BuildZora Support</b><br>Click the bubble to ask about orders, materials, delivery, or your project quote.</div>
+</div>
+
+<button class="launcher" id="launcherBtn" aria-label="Open support chat">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+
+<div class="panel" id="panel">
+  <div class="head">
+    <div class="mark">BZ</div>
+    <div>
+      <div class="who">BuildZora Support</div>
+      <div class="sub">Usually replies in a few seconds</div>
+    </div>
+  </div>
+  <div class="log" id="log"></div>
+  <div class="chips" id="chips"></div>
+  <div class="inputRow">
+    <input id="inputBox" type="text" placeholder="Type your question…" />
+    <button id="sendBtn" aria-label="Send">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+    </button>
+  </div>
+  <div class="foot">AI-generated answers — verify order-specific details with your rep.</div>
+</div>
+
+<script>
+const SUGGESTIONS = ["Track my order", "Request a bulk quote", "Delivery timelines", "Return a product"];
+const WELCOME = "Hi! I'm the BuildZora assistant. Ask me about materials, orders, delivery, or getting a project quote.";
+
+let history = [];
+const log = document.getElementById('log');
+const chips = document.getElementById('chips');
+const inputBox = document.getElementById('inputBox');
+const sendBtn = document.getElementById('sendBtn');
+const panel = document.getElementById('panel');
+const launcherBtn = document.getElementById('launcherBtn');
+
+function addMessage(role, text){
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+  div.textContent = text;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+  return div;
+}
+
+function renderChips(){
+  chips.innerHTML = '';
+  SUGGESTIONS.forEach(s => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = s;
+    b.onclick = () => { inputBox.value = s; handleSend(); };
+    chips.appendChild(b);
+  });
+}
+
+function showTyping(){
+  const div = document.createElement('div');
+  div.className = 'msg bot typing';
+  div.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+  return div;
+}
+
+async function handleSend(){
+  const text = inputBox.value.trim();
+  if(!text) return;
+  inputBox.value = '';
+  sendBtn.disabled = true;
+  addMessage('user', text);
+  history.push({role:'user', content:text});
+
+  const typing = showTyping();
+
+  try{
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ messages: history })
+    });
+    const data = await res.json();
+    typing.remove();
+    if(!res.ok){
+      addMessage('bot', data.error || "Something went wrong. Please try again.");
+    } else {
+      addMessage('bot', data.reply);
+      history.push({role:'assistant', content: data.reply});
+    }
+  }catch(err){
+    typing.remove();
+    addMessage('bot', "Couldn't reach the server. Please check your connection and try again.");
+  }
+  sendBtn.disabled = false;
+}
+
+sendBtn.addEventListener('click', handleSend);
+inputBox.addEventListener('keydown', e => { if(e.key === 'Enter') handleSend(); });
+
+launcherBtn.addEventListener('click', () => {
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open') && log.children.length === 0){
+    addMessage('bot', WELCOME);
+    renderChips();
+    inputBox.focus();
+  }
+});
+</script>
+</body>
+</html>
