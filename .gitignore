@@ -190,3 +190,5 @@ Module01/household_power_consumption.txt
 # Project input files
 # Uncomment the following if input media should NOT be pushed:
 # **/input/*
+activate
+base
